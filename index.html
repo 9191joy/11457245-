@@ -1,61 +1,149 @@
-const introText = `
-🌃 歡迎來到台灣夜市探險記！
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣夜市探險記</title>
 
-你是一位來台灣交換的外國學生 🇻🇳
-希望透過探索夜市學習華語，
-並認識台灣文化與生活方式。
+<style>
+body{
+margin:0;
+font-family:"Microsoft JhengHei",sans-serif;
+background:linear-gradient(-45deg,#0f172a,#1e293b,#6366f1,#0ea5e9);
+background-size:400% 400%;
+animation:bg 10s ease infinite;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
 
-準備開始冒險了嗎？
-`;
+@keyframes bg{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.card{
+width:800px;
+max-width:90%;
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(10px);
+padding:30px;
+border-radius:20px;
+color:white;
+text-align:center;
+}
+
+button{
+width:100%;
+padding:15px;
+margin:10px 0;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.8;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<h1>🌃 台灣夜市探險記</h1>
+
+<h2 id="question"></h2>
+
+<div id="choices"></div>
+
+</div>
+
+<script>
 
 const story = {
 
 start:{
-text:"🏫 上完華語課後，你決定去哪裡？",
+text:"你來到台灣後，晚上決定去哪裡？",
 choices:[
-{text:"🌃 去夜市探險",correct:true,next:"q2"}
+{text:"🌃 去夜市",next:"food"}
 ]
 },
 
-q2:{
-text:"🍢 在小吃區，你看到什麼台灣特色小吃？",
+food:{
+text:"在夜市裡，你最想吃什麼？",
 choices:[
-{text:"蚵仔煎",correct:true,next:"q3"},
-{text:"漢堡",correct:false,next:"q3"},
-{text:"披薩",correct:false,next:"q3"}
+{text:"🍢 蚵仔煎",next:"drink"},
+{text:"🍢 臭豆腐",next:"drink"}
 ]
 },
 
-q3:{
-text:"🧋 台灣最有名的飲料是？",
+drink:{
+text:"吃完小吃後，你想喝什麼？",
 choices:[
-{text:"珍珠奶茶",correct:true,next:"q4"},
-{text:"蘋果汁",correct:false,next:"q4"},
-{text:"可樂",correct:false,next:"q4"}
+{text:"🧋 珍珠奶茶",next:"temple"},
+{text:"🥤 可樂",next:"temple"}
 ]
 },
 
-q4:{
-text:"🏮 在廟口文化區，你學到了什麼？",
+temple:{
+text:"你經過廟口文化區，學到什麼？",
 choices:[
-{text:"祈福與拜拜",correct:true,next:"q5"},
-{text:"游泳技巧",correct:false,next:"q5"},
-{text:"足球規則",correct:false,next:"q5"}
+{text:"🏮 祈福",next:"bus"},
+{text:"🏮 拜拜",next:"bus"}
 ]
 },
 
-q5:{
-text:"🚌 看懂公車站牌後，你有什麼收穫？",
+bus:{
+text:"回家的路上，你看到什麼？",
 choices:[
-{text:"更了解台灣生活",correct:true,next:"end"},
-{text:"學會開飛機",correct:false,next:"end"},
-{text:"變成老師",correct:false,next:"end"}
+{text:"🚌 公車站",next:"end"},
+{text:"🚕 計程車",next:"end"}
 ]
 },
 
 end:{
 text:"🎉 恭喜完成台灣夜市探險！",
-end:true
+choices:[
+{text:"🔄 再玩一次",next:"start"}
+]
 }
 
 };
+
+function showScene(key){
+
+const scene=story[key];
+
+document.getElementById("question").innerText=scene.text;
+
+const choicesDiv=document.getElementById("choices");
+
+choicesDiv.innerHTML="";
+
+scene.choices.forEach(choice=>{
+
+const btn=document.createElement("button");
+
+btn.innerText=choice.text;
+
+btn.onclick=()=>{
+showScene(choice.next);
+};
+
+choicesDiv.appendChild(btn);
+
+});
+
+}
+
+showScene("start");
+
+</script>
+
+</body>
+</html>
