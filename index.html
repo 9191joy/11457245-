@@ -1,0 +1,61 @@
+const introText = `
+🌃 歡迎來到台灣夜市探險記！
+
+你是一位來台灣交換的外國學生 🇻🇳
+希望透過探索夜市學習華語，
+並認識台灣文化與生活方式。
+
+準備開始冒險了嗎？
+`;
+
+const story = {
+
+start:{
+text:"🏫 上完華語課後，你決定去哪裡？",
+choices:[
+{text:"🌃 去夜市探險",correct:true,next:"q2"}
+]
+},
+
+q2:{
+text:"🍢 在小吃區，你看到什麼台灣特色小吃？",
+choices:[
+{text:"蚵仔煎",correct:true,next:"q3"},
+{text:"漢堡",correct:false,next:"q3"},
+{text:"披薩",correct:false,next:"q3"}
+]
+},
+
+q3:{
+text:"🧋 台灣最有名的飲料是？",
+choices:[
+{text:"珍珠奶茶",correct:true,next:"q4"},
+{text:"蘋果汁",correct:false,next:"q4"},
+{text:"可樂",correct:false,next:"q4"}
+]
+},
+
+q4:{
+text:"🏮 在廟口文化區，你學到了什麼？",
+choices:[
+{text:"祈福與拜拜",correct:true,next:"q5"},
+{text:"游泳技巧",correct:false,next:"q5"},
+{text:"足球規則",correct:false,next:"q5"}
+]
+},
+
+q5:{
+text:"🚌 看懂公車站牌後，你有什麼收穫？",
+choices:[
+{text:"更了解台灣生活",correct:true,next:"end"},
+{text:"學會開飛機",correct:false,next:"end"},
+{text:"變成老師",correct:false,next:"end"}
+]
+},
+
+end:{
+text:"🎉 恭喜完成台灣夜市探險！",
+end:true
+}
+
+};
