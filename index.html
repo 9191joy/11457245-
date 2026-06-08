@@ -7,142 +7,287 @@
 
 <style>
 body{
-margin:0;
-font-family:"Microsoft JhengHei",sans-serif;
-background:linear-gradient(-45deg,#0f172a,#1e293b,#6366f1,#0ea5e9);
-background-size:400% 400%;
-animation:bg 10s ease infinite;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+    background:#111;
+    color:white;
+    font-family:"Microsoft JhengHei",sans-serif;
+    text-align:center;
+    padding:20px;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
+h1{
+    color:gold;
 }
 
-.card{
-width:800px;
-max-width:90%;
-background:rgba(255,255,255,.1);
-backdrop-filter:blur(10px);
-padding:30px;
-border-radius:20px;
-color:white;
-text-align:center;
+#stats{
+    margin:20px;
+    padding:15px;
+    border:1px solid #444;
 }
 
 button{
-width:100%;
-padding:15px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-font-size:18px;
-cursor:pointer;
+    margin:5px;
+    padding:10px 20px;
+    border:none;
+    cursor:pointer;
+    border-radius:8px;
+    font-size:16px;
 }
 
-button:hover{
-opacity:0.8;
+.choice{
+    background:#00bcd4;
+    color:white;
+}
+
+.choice:hover{
+    opacity:0.8;
+}
+
+#content{
+    margin-top:20px;
+    min-height:150px;
 }
 </style>
-
 </head>
-<body>
 
-<div class="card">
+<body>
 
 <h1>🌃 台灣夜市探險記</h1>
 
-<h2 id="question"></h2>
+<div id="stats"></div>
+
+<div id="content"></div>
 
 <div id="choices"></div>
 
-</div>
-
 <script>
+let day = 1;
+let energy = 100;
+let language = 0;
+let culture = 0;
+let cards = [];
 
-const story = {
+updateStats();
+school();
 
-start:{
-text:"你來到台灣後，晚上決定去哪裡？",
-choices:[
-{text:"🌃 去夜市",next:"food"}
-]
-},
-
-food:{
-text:"在夜市裡，你最想吃什麼？",
-choices:[
-{text:"🍢 蚵仔煎",next:"drink"},
-{text:"🍢 臭豆腐",next:"drink"}
-]
-},
-
-drink:{
-text:"吃完小吃後，你想喝什麼？",
-choices:[
-{text:"🧋 珍珠奶茶",next:"temple"},
-{text:"🥤 可樂",next:"temple"}
-]
-},
-
-temple:{
-text:"你經過廟口文化區，學到什麼？",
-choices:[
-{text:"🏮 祈福",next:"bus"},
-{text:"🏮 拜拜",next:"bus"}
-]
-},
-
-bus:{
-text:"回家的路上，你看到什麼？",
-choices:[
-{text:"🚌 公車站",next:"end"},
-{text:"🚕 計程車",next:"end"}
-]
-},
-
-end:{
-text:"🎉 恭喜完成台灣夜市探險！",
-choices:[
-{text:"🔄 再玩一次",next:"start"}
-]
+function updateStats(){
+    document.getElementById("stats").innerHTML = `
+    📅 第 ${day} 天<br>
+    ⚡ 體力：${energy}<br>
+    🈶 華語能力：${language}<br>
+    ⭐ 文化分數：${culture}<br>
+    📚 詞彙數：${cards.length}
+    `;
 }
 
-};
-
-function showScene(key){
-
-const scene=story[key];
-
-document.getElementById("question").innerText=scene.text;
-
-const choicesDiv=document.getElementById("choices");
-
-choicesDiv.innerHTML="";
-
-scene.choices.forEach(choice=>{
-
-const btn=document.createElement("button");
-
-btn.innerText=choice.text;
-
-btn.onclick=()=>{
-showScene(choice.next);
-};
-
-choicesDiv.appendChild(btn);
-
-});
-
+function show(text){
+    document.getElementById("content").innerHTML = text;
 }
 
-showScene("start");
+function choices(arr){
+    let html = "";
+    arr.forEach(item=>{
+        html += `<button class="choice" onclick="${item.action}">${item.text}</button>`;
+    });
+    document.getElementById("choices").innerHTML = html;
+}
 
+function school(){
+    language += 10;
+    updateStats();
+
+    show(`
+    <h2>🏫 華語課</h2>
+    今天學習了新的華語內容。<br>
+    華語能力 +10
+    `);
+
+    choices([
+        {text:"前往夜市", action:"nightMarket()"}
+    ]);
+}
+
+function nightMarket(){
+
+    if(energy <= 0){
+        hotel();
+        return;
+    }
+
+    updateStats();
+
+    show("<h2>🌃 夜市入口</h2>今晚想去哪裡？");
+
+    choices([
+        {text:"🍢 小吃攤", action:"food()"},
+        {text:"🧋 飲料店", action:"drink()"},
+        {text:"🎯 遊戲攤", action:"game()"},
+        {text:"🏮 廟口", action:"temple()"},
+        {text:"🏨 回飯店", action:"hotel()"}
+    ]);
+}
+
+function food(){
+    energy -= 15;
+
+    if(!cards.includes("蚵仔煎")){
+        cards.push("蚵仔煎");
+        culture += 20;
+    }
+
+    if(!cards.includes("臭豆腐")){
+        cards.push("臭豆腐");
+        culture += 20;
+    }
+
+    let msg = `
+    <h2>🍢 小吃攤</h2>
+    學到：蚵仔煎、臭豆腐<br>
+    `;
+
+    if(language >= 30){
+        culture += 30;
+        msg += "你聽懂老闆介紹台灣小吃文化。";
+    }
+
+    updateStats();
+    show(msg);
+
+    choices([
+        {text:"返回夜市", action:"nightMarket()"}
+    ]);
+}
+
+function drink(){
+    energy -= 10;
+
+    ["珍珠奶茶","半糖","去冰"].forEach(word=>{
+        if(!cards.includes(word)){
+            cards.push(word);
+            culture += 20;
+        }
+    });
+
+    updateStats();
+
+    show(`
+    <h2>🧋 飲料店</h2>
+    學到：珍珠奶茶、半糖、去冰
+    `);
+
+    choices([
+        {text:"返回夜市", action:"nightMarket()"}
+    ]);
+}
+
+function game(){
+    energy -= 20;
+
+    let success = Math.random() > 0.5;
+
+    if(success){
+        culture += 50;
+    }
+
+    updateStats();
+
+    show(`
+    <h2>🎯 遊戲攤</h2>
+    ${success ? "挑戰成功！文化分數 +50" : "挑戰失敗！"}
+    `);
+
+    choices([
+        {text:"返回夜市", action:"nightMarket()"}
+    ]);
+}
+
+function temple(){
+    energy -= 15;
+
+    ["祈福","拜拜"].forEach(word=>{
+        if(!cards.includes(word)){
+            cards.push(word);
+            culture += 20;
+        }
+    });
+
+    updateStats();
+
+    show(`
+    <h2>🏮 廟口</h2>
+    學到：祈福、拜拜
+    `);
+
+    choices([
+        {text:"返回夜市", action:"nightMarket()"}
+    ]);
+}
+
+function hotel(){
+
+    let words = cards.map(w=>`• ${w}`).join("<br>");
+
+    show(`
+    <h2>🏨 飯店複習</h2>
+    ${words}
+    <hr>
+    珍珠奶茶屬於哪一類？ 
+    `);
+
+    choices([
+        {text:"飲料", action:"correct()"},
+        {text:"水果", action:"wrong()"}
+    ]);
+}
+
+function correct(){
+    culture += 100;
+    nextDay();
+}
+
+function wrong(){
+    culture += 20;
+    nextDay();
+}
+
+function nextDay(){
+
+    day++;
+
+    if(day > 7){
+        ending();
+        return;
+    }
+
+    energy = 100;
+
+    updateStats();
+
+    school();
+}
+
+function ending(){
+
+    updateStats();
+
+    let result = "";
+
+    if(culture >= 700){
+        result = "🏆 夜市文化達人";
+    }else if(culture >= 400){
+        result = "😊 文化探索家";
+    }else{
+        result = "📖 繼續努力";
+    }
+
+    show(`
+    <h2>遊戲結束</h2>
+    ${result}<br><br>
+    最終分數：${culture}<br>
+    學到詞彙：${cards.length} 個
+    `);
+
+    document.getElementById("choices").innerHTML = "";
+}
 </script>
 
 </body>
