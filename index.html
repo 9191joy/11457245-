@@ -1,7 +1,3 @@
-let culture = 0;
-let language = 10;
-let words = [];
-
 const introText = `
 🌃 歡迎來到台灣夜市探險記！
 
@@ -10,6 +6,10 @@ const introText = `
 
 準備好了嗎？
 `;
+
+let culture = 0;
+let language = 10;
+let words = [];
 
 const story = {
 
@@ -33,10 +33,10 @@ choices:[
 },
 
 food:{
-text:"🍢 你來到小吃區。",
+text:"🍢 小吃區：你學到蚵仔煎和臭豆腐。",
 choices:[
 {
-text:"學習蚵仔煎和臭豆腐",
+text:"返回夜市",
 action:()=>{
 words.push("蚵仔煎");
 words.push("臭豆腐");
@@ -48,10 +48,10 @@ next:"nightmarket"
 },
 
 drink:{
-text:"🧋 你來到飲料店。",
+text:"🧋 飲料店：你學到珍珠奶茶、半糖、去冰。",
 choices:[
 {
-text:"學習珍珠奶茶、半糖、去冰",
+text:"返回夜市",
 action:()=>{
 words.push("珍珠奶茶");
 words.push("半糖");
@@ -64,10 +64,10 @@ next:"nightmarket"
 },
 
 game:{
-text:"🎯 挑戰夜市遊戲攤。",
+text:"🎯 遊戲攤挑戰成功！",
 choices:[
 {
-text:"開始挑戰",
+text:"返回夜市",
 action:()=>{
 culture += 50;
 },
@@ -77,10 +77,10 @@ next:"nightmarket"
 },
 
 temple:{
-text:"🏮 參觀廟口文化區。",
+text:"🏮 廟口文化區：你學到祈福和拜拜。",
 choices:[
 {
-text:"學習祈福與拜拜",
+text:"返回夜市",
 action:()=>{
 words.push("祈福");
 words.push("拜拜");
@@ -92,10 +92,10 @@ next:"nightmarket"
 },
 
 bus:{
-text:"🚌 觀看公車路線圖。",
+text:"🚌 你成功看懂公車路線圖。",
 choices:[
 {
-text:"查看路線圖",
+text:"返回夜市",
 action:()=>{
 culture += 30;
 },
@@ -105,7 +105,7 @@ next:"nightmarket"
 },
 
 hotel:{
-text:"🏨 回到飯店，開始複習。",
+text:"🏨 回到飯店開始複習。",
 choices:[
 {text:"開始測驗",next:"quiz1"}
 ]
@@ -140,93 +140,3 @@ end:true
 }
 
 };
-
-function startGame(){
-document.getElementById("intro").innerHTML=introText;
-showScene("start");
-}
-
-function showScene(key){
-
-const scene=story[key];
-
-document.getElementById("question").innerText=scene.text;
-
-const choicesDiv=document.getElementById("choices");
-const resultDiv=document.getElementById("result");
-
-choicesDiv.innerHTML="";
-resultDiv.innerHTML="";
-
-if(scene.end){
-
-let endingText="📖 普通結局：繼續努力";
-
-if(culture>=100){
-endingText="🏆 真結局：夜市文化達人";
-}
-else if(culture>=60){
-endingText="😊 好結局：文化探索家";
-}
-
-document.getElementById("question").innerHTML=endingText;
-
-choicesDiv.innerHTML=`
-<p style="font-size:22px;">
-⭐ 文化分數：${culture}<br>
-🈶 華語能力：${language}<br>
-📚 學到詞彙：${words.length} 個<br><br>
-感謝你完成台灣夜市探險記！
-</p>
-`;
-
-const btn=document.createElement("button");
-btn.innerText="🔄 再玩一次";
-btn.onclick=()=>{
-culture=0;
-language=10;
-words=[];
-startGame();
-};
-
-choicesDiv.appendChild(btn);
-
-return;
-}
-
-scene.choices.forEach(c=>{
-
-const btn=document.createElement("button");
-btn.innerText=c.text;
-
-btn.onclick=()=>{
-
-if(c.action){
-c.action();
-}
-
-if(c.correct!==undefined){
-
-resultDiv.innerHTML=
-c.correct ? "🎉 答對了！" : "😅 答錯了！";
-
-resultDiv.style.color=
-c.correct ? "#22c55e" : "#ef4444";
-
-setTimeout(()=>{
-showScene(c.next);
-},1200);
-
-}else{
-showScene(c.next);
-}
-
-};
-
-choicesDiv.appendChild(btn);
-
-});
-
-}
-
-startGame();
