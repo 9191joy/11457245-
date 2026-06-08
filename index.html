@@ -1,100 +1,44 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>台灣夜市探險記</title>
-<style>
-body{
-margin:0;
-font-family:"Microsoft JhengHei",sans-serif;
-background:linear-gradient(-45deg,#0f172a,#1e293b,#6366f1,#0ea5e9,#22c55e);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-}
-@keyframes bg{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-.card{
-width:850px;
-max-width:90%;
-background:rgba(255,255,255,.1);
-backdrop-filter:blur(15px);
-padding:30px;
-border-radius:20px;
-box-shadow:0 0 20px rgba(0,0,0,.4);
-text-align:center;
-}
-button{
-width:100%;
-padding:12px;
-margin:8px 0;
-border:none;
-border-radius:10px;
-font-size:18px;
-background:#334155;
-color:white;
-cursor:pointer;
-}
-button:hover{
-background:#475569;
-}
-.stats{
-margin-bottom:20px;
-color:#facc15;
-}
-#result{
-font-size:22px;
-margin-top:15px;
-}
-</style>
-</head>
-<body>
-<div class="card">
-<h1>🌃 台灣夜市探險記</h1>
-<div class="stats">
-⭐ 文化分數：<span id="culture">0</span><br>
-🈶 華語能力：<span id="language">0</span><br>
-📚 學到詞彙：<span id="words">0</span>
-</div>
-<h2 id="question"></h2>
-<div id="choices"></div>
-<div id="result"></div>
-</div>
-<script>
 let culture = 0;
 let language = 10;
 let words = [];
+
+const introText = `
+🌃 歡迎來到台灣夜市探險記！
+
+你是一位來台灣交換的外國學生，
+希望透過探索夜市學習華語與認識台灣文化。
+
+準備好了嗎？
+`;
+
 const story = {
+
 start:{
-text:"你來到台灣夜市，第一站想去哪裡？",
+text:"🏫 今天上了華語課，接下來要做什麼？",
 choices:[
-{ text:"🍢 小吃區", next:"food"},
-{ text:"🧋 飲料店", next:"drink"},
-{ text:"🏮 廟口文化區", next:"temple"}
+{text:"🌃 去夜市",next:"nightmarket"}
 ]
 },
+
+nightmarket:{
+text:"🌃 夜市入口，今晚要去哪裡？",
+choices:[
+{text:"🍢 小吃區",next:"food"},
+{text:"🧋 飲料店",next:"drink"},
+{text:"🎯 遊戲攤",next:"game"},
+{text:"🏮 廟口文化區",next:"temple"},
+{text:"🚌 公車站",next:"bus"},
+{text:"🏨 回飯店",next:"hotel"}
+]
+},
+
 food:{
-text:"你學到了哪一個台灣小吃？",
+text:"🍢 你來到小吃區。",
 choices:[
 {
-text:"蚵仔煎",
+text:"學習蚵仔煎和臭豆腐",
 action:()=>{
 words.push("蚵仔煎");
-culture += 30;
-},
-next:"nightmarket"
-},
-{
-text:"臭豆腐",
-action:()=>{
 words.push("臭豆腐");
 culture += 30;
 },
@@ -102,40 +46,43 @@ next:"nightmarket"
 }
 ]
 },
+
 drink:{
-text:"台灣最有名的飲料是？",
+text:"🧋 你來到飲料店。",
 choices:[
 {
-text:"珍珠奶茶",
+text:"學習珍珠奶茶、半糖、去冰",
 action:()=>{
 words.push("珍珠奶茶");
-culture += 40;
-},
-next:"nightmarket"
-},
-{
-text:"蘋果汁",
-action:()=>{
-culture += 10;
+words.push("半糖");
+words.push("去冰");
+language += 20;
 },
 next:"nightmarket"
 }
 ]
 },
-temple:{
-text:"你在廟口學到了什麼？",
+
+game:{
+text:"🎯 挑戰夜市遊戲攤。",
 choices:[
 {
-text:"祈福",
+text:"開始挑戰",
 action:()=>{
-words.push("祈福");
-culture += 40;
+culture += 50;
 },
 next:"nightmarket"
+}
+]
 },
+
+temple:{
+text:"🏮 參觀廟口文化區。",
+choices:[
 {
-text:"拜拜",
+text:"學習祈福與拜拜",
 action:()=>{
+words.push("祈福");
 words.push("拜拜");
 culture += 40;
 },
@@ -143,106 +90,143 @@ next:"nightmarket"
 }
 ]
 },
-nightmarket:{
-text:"接下來要做什麼？",
+
+bus:{
+text:"🚌 觀看公車路線圖。",
 choices:[
 {
-text:"🎯 玩遊戲攤",
+text:"查看路線圖",
 action:()=>{
-culture += 50;
+culture += 30;
 },
-next:"quiz"
-},
-{
-text:"🏨 回飯店",
-next:"quiz"
+next:"nightmarket"
 }
 ]
 },
-quiz:{
-text:"哪個是台灣有名的飲料？",
+
+hotel:{
+text:"🏨 回到飯店，開始複習。",
 choices:[
-{
-text:"珍珠奶茶",
-correct:true,
-next:"ending"
-},
-{
-text:"咖啡",
-correct:false,
-next:"ending"
-}
+{text:"開始測驗",next:"quiz1"}
 ]
 },
+
+quiz1:{
+text:"哪個是台灣著名飲料？",
+choices:[
+{text:"珍珠奶茶",correct:true,next:"quiz2"},
+{text:"蘋果汁",correct:false,next:"quiz2"}
+]
+},
+
+quiz2:{
+text:"「拜拜」通常和哪裡有關？",
+choices:[
+{text:"廟宇",correct:true,next:"quiz3"},
+{text:"學校",correct:false,next:"quiz3"}
+]
+},
+
+quiz3:{
+text:"「去冰」是在買什麼時常用到？",
+choices:[
+{text:"飲料",correct:true,next:"ending"},
+{text:"公車票",correct:false,next:"ending"}
+]
+},
+
 ending:{
 end:true
 }
+
 };
-function updateStats(){
-document.getElementById("culture").innerText = culture;
-document.getElementById("language").innerText = language;
-document.getElementById("words").innerText = words.length;
+
+function startGame(){
+document.getElementById("intro").innerHTML=introText;
+showScene("start");
 }
-function showScene(sceneName){
-const scene = story[sceneName];
-const q = document.getElementById("question");
-const c = document.getElementById("choices");
-const r = document.getElementById("result");
-c.innerHTML="";
-r.innerHTML="";
-updateStats();
+
+function showScene(key){
+
+const scene=story[key];
+
+document.getElementById("question").innerText=scene.text;
+
+const choicesDiv=document.getElementById("choices");
+const resultDiv=document.getElementById("result");
+
+choicesDiv.innerHTML="";
+resultDiv.innerHTML="";
+
 if(scene.end){
-let endingText="📖 普通結局";
-if(culture>=120){
+
+let endingText="📖 普通結局：繼續努力";
+
+if(culture>=100){
 endingText="🏆 真結局：夜市文化達人";
 }
-else if(culture>=80){
+else if(culture>=60){
 endingText="😊 好結局：文化探索家";
 }
-q.innerHTML=endingText;
-c.innerHTML=`
-<p>
-最終文化分數：${culture}<br>
-學到詞彙：${words.length} 個
+
+document.getElementById("question").innerHTML=endingText;
+
+choicesDiv.innerHTML=`
+<p style="font-size:22px;">
+⭐ 文化分數：${culture}<br>
+🈶 華語能力：${language}<br>
+📚 學到詞彙：${words.length} 個<br><br>
+感謝你完成台灣夜市探險記！
 </p>
 `;
+
 const btn=document.createElement("button");
 btn.innerText="🔄 再玩一次";
 btn.onclick=()=>{
 culture=0;
 language=10;
 words=[];
-showScene("start");
+startGame();
 };
-c.appendChild(btn);
+
+choicesDiv.appendChild(btn);
+
 return;
 }
-q.innerText=scene.text;
-scene.choices.forEach(choice=>{
+
+scene.choices.forEach(c=>{
+
 const btn=document.createElement("button");
-btn.innerText=choice.text;
+btn.innerText=c.text;
+
 btn.onclick=()=>{
-if(choice.action){
-choice.action();
+
+if(c.action){
+c.action();
 }
-if(choice.correct!==undefined){
-r.innerHTML=choice.correct
-? "🎉 答對了！"
-: "😅 答錯了！";
-r.style.color=choice.correct
-? "#22c55e"
-: "#ef4444";
+
+if(c.correct!==undefined){
+
+resultDiv.innerHTML=
+c.correct ? "🎉 答對了！" : "😅 答錯了！";
+
+resultDiv.style.color=
+c.correct ? "#22c55e" : "#ef4444";
+
 setTimeout(()=>{
-showScene(choice.next);
+showScene(c.next);
 },1200);
+
 }else{
-showScene(choice.next);
+showScene(c.next);
 }
+
 };
-c.appendChild(btn);
+
+choicesDiv.appendChild(btn);
+
 });
+
 }
-showScene("start");
-</script>
-</body>
-</html>
+
+startGame();
