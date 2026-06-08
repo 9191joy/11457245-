@@ -1,302 +1,248 @@
-:: StoryInit
-<<set $day = 1>>
-<<set $energy = 100>>
-<<set $language = 0>>
-<<set $culture = 0>>
-<<set $cards = []>>
-<<set $maxDay = 7>>
-
-:: StoryCaption
-📅 第 <<= $day >> 天<br>
-⚡ 體力：<<= $energy >><br>
-🈶 華語能力：<<= $language >><br>
-⭐ 文化分數：<<= $culture >><br>
-📚 詞彙數：<<= $cards.length >><br>
-<hr>
-
-:: Start
-<h1>🌃 台灣夜市探險記</h1>
-
-你是一位來台灣交換的外國學生，希望透過探索夜市學習華語與認識台灣文化。
-
-[[開始旅程->School]]
-
-:: School
-<<set $language += 10>>
-
-<h2>🏫 華語課</h2>
-
-今天上了華語課。
-
-華語能力 +10
-
-<br><br>
-
-[[放學去夜市->NightMarket]]
-
-:: NightMarket
-<<if $energy <= 0>>
-<<goto "Hotel">>
-<</if>>
-
-<h2>🌃 夜市入口</h2>
-
-今晚要去哪裡？
-
-<br><br>
-
-[[🍢 小吃區->Food]]
-
-[[🧋 飲料店->Drink]]
-
-[[🎯 遊戲攤->Game]]
-
-[[🏮 廟口文化區->Temple]]
-
-[[🚌 公車站->Bus]]
-
-[[🏨 回飯店->Hotel]]
-
-:: Food
-<<set $energy -= 15>>
-
-<h2>🍢 小吃區</h2>
-
-<<if !$cards.includes("蚵仔煎")>>
-<<set $cards.push("蚵仔煎")>>
-學到詞彙：蚵仔煎<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if !$cards.includes("臭豆腐")>>
-<<set $cards.push("臭豆腐")>>
-學到詞彙：臭豆腐<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if $language >= 30>>
-你聽懂老闆介紹台灣小吃文化。<br>
-文化分數 +30
-<<set $culture += 30>>
-<<else>>
-你只能聽懂部分內容。
-<</if>>
-
-<br><br>
-
-[[返回夜市->NightMarket]]
-
-:: Drink
-<<set $energy -= 10>>
-
-<h2>🧋 飲料店</h2>
-
-<<if !$cards.includes("珍珠奶茶")>>
-<<set $cards.push("珍珠奶茶")>>
-學到詞彙：珍珠奶茶<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if !$cards.includes("半糖")>>
-<<set $cards.push("半糖")>>
-學到詞彙：半糖<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if !$cards.includes("去冰")>>
-<<set $cards.push("去冰")>>
-學到詞彙：去冰<br>
-<<set $culture += 20>>
-<</if>>
-
-[[返回夜市->NightMarket]]
-
-:: Game
-<<set $energy -= 20>>
-
-<h2>🎯 遊戲攤</h2>
-
-<<if random(1,100) > 50>>
-挑戰成功！<br>
-獲得夜市小禮物！<br>
-<<set $culture += 50>>
-文化分數 +50
-<<else>>
-挑戰失敗，下次再試！
-<</if>>
-
-<br><br>
-
-[[返回夜市->NightMarket]]
-
-:: Temple
-<<set $energy -= 15>>
-
-<h2>🏮 廟口文化區</h2>
-
-<<if !$cards.includes("祈福")>>
-<<set $cards.push("祈福")>>
-學到詞彙：祈福<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if !$cards.includes("拜拜")>>
-<<set $cards.push("拜拜")>>
-學到詞彙：拜拜<br>
-<<set $culture += 20>>
-<</if>>
-
-<<if $language >= 40>>
-你聽懂廟方人員介紹台灣民間信仰。<br>
-文化分數 +40
-<<set $culture += 40>>
-<</if>>
-
-[[返回夜市->NightMarket]]
-
-:: Bus
-<<set $energy -= 10>>
-
-<h2>🚌 公車站</h2>
-
-<<if $language >= 50>>
-你成功看懂公車路線圖。<br>
-文化分數 +30
-<<set $culture += 30>>
-<<else>>
-你看不太懂站牌資訊。
-<</if>>
-
-[[返回夜市->NightMarket]]
-
-:: Hotel
-<h2>🏨 飯店複習</h2>
-
-今天學到：
-
-<br><br>
-
-<<for _i = 0; _i < $cards.length; _i++>>
-• <<= $cards[_i] >><br>
-<</for>>
-
-<hr>
-
-<<set $quiz = random(1,3)>>
-
-<<if $quiz == 1>>
-
-哪個是台灣著名飲料？
-
-[[珍珠奶茶->Correct]]
-
-[[蘋果汁->Wrong]]
-
-<<elseif $quiz == 2>>
-
-「拜拜」通常和哪裡有關？
-
-[[廟宇->Correct]]
-
-[[學校->Wrong]]
-
-<<else>>
-
-「去冰」是在買什麼時常用到？
-
-[[飲料->Correct]]
-
-[[公車票->Wrong]]
-
-<</if>>
-
-:: Correct
-<h2>✅ 答對了！</h2>
-
-<<set $culture += 100>>
-
-文化分數 +100
-
-<br><br>
-
-[[睡覺->NextDay]]
-
-:: Wrong
-<h2>❌ 答錯了！</h2>
-
-<<set $culture += 20>>
-
-文化分數 +20
-
-<br><br>
-
-[[睡覺->NextDay]]
-
-:: NextDay
-<<set $day += 1>>
-<<set $energy = 100>>
-
-<<if $day > $maxDay>>
-<<goto "Ending">>
-<<else>>
-<<goto "School">>
-<</if>>
-
-:: Ending
-<h1>🎊 旅程結束</h1>
-
-最終文化分數：<<= $culture >><br>
-華語能力：<<= $language >><br>
-學到詞彙：<<= $cards.length >> 個
-
-<hr>
-
-<<if $culture >= 700>>
-
-<h2>🏆 真結局：夜市文化達人</h2>
-
-你已經非常了解台灣夜市文化，也能用華語和當地人交流！
-
-<<elseif $culture >= 400>>
-
-<h2>😊 好結局：文化探索家</h2>
-
-你對台灣文化有不錯的認識，收穫滿滿！
-
-<<else>>
-
-<h2>📖 普通結局：繼續努力</h2>
-
-你還有許多台灣文化值得探索！
-
-<</if>>
-
-:: StoryStylesheet
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣夜市探險記</title>
+<style>
 body{
-    background:#111;
-    color:white;
-    font-family:"Microsoft JhengHei",sans-serif;
+margin:0;
+font-family:"Microsoft JhengHei",sans-serif;
+background:linear-gradient(-45deg,#0f172a,#1e293b,#6366f1,#0ea5e9,#22c55e);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
-
-h1{
-    color:#FFD700;
-    text-align:center;
+@keyframes bg{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
-
-h2{
-    color:#00FFFF;
+.card{
+width:850px;
+max-width:90%;
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(15px);
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+text-align:center;
 }
-
-a{
-    color:#FF66CC;
-    font-weight:bold;
+button{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+font-size:18px;
+background:#334155;
+color:white;
+cursor:pointer;
 }
-
-a:hover{
-    color:#FFD700;
+button:hover{
+background:#475569;
 }
-
-.passage{
-    max-width:900px;
-    margin:auto;
+.stats{
+margin-bottom:20px;
+color:#facc15;
 }
+#result{
+font-size:22px;
+margin-top:15px;
+}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>🌃 台灣夜市探險記</h1>
+<div class="stats">
+⭐ 文化分數：<span id="culture">0</span><br>
+🈶 華語能力：<span id="language">0</span><br>
+📚 學到詞彙：<span id="words">0</span>
+</div>
+<h2 id="question"></h2>
+<div id="choices"></div>
+<div id="result"></div>
+</div>
+<script>
+let culture = 0;
+let language = 10;
+let words = [];
+const story = {
+start:{
+text:"你來到台灣夜市，第一站想去哪裡？",
+choices:[
+{ text:"🍢 小吃區", next:"food"},
+{ text:"🧋 飲料店", next:"drink"},
+{ text:"🏮 廟口文化區", next:"temple"}
+]
+},
+food:{
+text:"你學到了哪一個台灣小吃？",
+choices:[
+{
+text:"蚵仔煎",
+action:()=>{
+words.push("蚵仔煎");
+culture += 30;
+},
+next:"nightmarket"
+},
+{
+text:"臭豆腐",
+action:()=>{
+words.push("臭豆腐");
+culture += 30;
+},
+next:"nightmarket"
+}
+]
+},
+drink:{
+text:"台灣最有名的飲料是？",
+choices:[
+{
+text:"珍珠奶茶",
+action:()=>{
+words.push("珍珠奶茶");
+culture += 40;
+},
+next:"nightmarket"
+},
+{
+text:"蘋果汁",
+action:()=>{
+culture += 10;
+},
+next:"nightmarket"
+}
+]
+},
+temple:{
+text:"你在廟口學到了什麼？",
+choices:[
+{
+text:"祈福",
+action:()=>{
+words.push("祈福");
+culture += 40;
+},
+next:"nightmarket"
+},
+{
+text:"拜拜",
+action:()=>{
+words.push("拜拜");
+culture += 40;
+},
+next:"nightmarket"
+}
+]
+},
+nightmarket:{
+text:"接下來要做什麼？",
+choices:[
+{
+text:"🎯 玩遊戲攤",
+action:()=>{
+culture += 50;
+},
+next:"quiz"
+},
+{
+text:"🏨 回飯店",
+next:"quiz"
+}
+]
+},
+quiz:{
+text:"哪個是台灣有名的飲料？",
+choices:[
+{
+text:"珍珠奶茶",
+correct:true,
+next:"ending"
+},
+{
+text:"咖啡",
+correct:false,
+next:"ending"
+}
+]
+},
+ending:{
+end:true
+}
+};
+function updateStats(){
+document.getElementById("culture").innerText = culture;
+document.getElementById("language").innerText = language;
+document.getElementById("words").innerText = words.length;
+}
+function showScene(sceneName){
+const scene = story[sceneName];
+const q = document.getElementById("question");
+const c = document.getElementById("choices");
+const r = document.getElementById("result");
+c.innerHTML="";
+r.innerHTML="";
+updateStats();
+if(scene.end){
+let endingText="📖 普通結局";
+if(culture>=120){
+endingText="🏆 真結局：夜市文化達人";
+}
+else if(culture>=80){
+endingText="😊 好結局：文化探索家";
+}
+q.innerHTML=endingText;
+c.innerHTML=`
+<p>
+最終文化分數：${culture}<br>
+學到詞彙：${words.length} 個
+</p>
+`;
+const btn=document.createElement("button");
+btn.innerText="🔄 再玩一次";
+btn.onclick=()=>{
+culture=0;
+language=10;
+words=[];
+showScene("start");
+};
+c.appendChild(btn);
+return;
+}
+q.innerText=scene.text;
+scene.choices.forEach(choice=>{
+const btn=document.createElement("button");
+btn.innerText=choice.text;
+btn.onclick=()=>{
+if(choice.action){
+choice.action();
+}
+if(choice.correct!==undefined){
+r.innerHTML=choice.correct
+? "🎉 答對了！"
+: "😅 答錯了！";
+r.style.color=choice.correct
+? "#22c55e"
+: "#ef4444";
+setTimeout(()=>{
+showScene(choice.next);
+},1200);
+}else{
+showScene(choice.next);
+}
+};
+c.appendChild(btn);
+});
+}
+showScene("start");
+</script>
+</body>
+</html>
